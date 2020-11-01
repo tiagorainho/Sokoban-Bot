@@ -16,6 +16,6 @@ class SearchProblem:
         for box in state.boxes:
             if box in self.domain.deadlocks:
                 return False
-
+                
         #dynamic deadblocks
         return not has_deadlocks_dynamic(state)

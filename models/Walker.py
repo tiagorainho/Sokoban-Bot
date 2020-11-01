@@ -29,9 +29,13 @@ class Walker():
                 return "ERROR"
         return ""
     
+    def has_moves(self):
+        return self.moves != []
+    
     def clean(self):
-        self.__init__()
-
+        self.pointer = 0
+        self.moves = []
+        self.keeper_positions = []
 
     def has_next_move(self):
         return len(self.moves) > self.pointer

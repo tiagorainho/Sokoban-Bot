@@ -30,7 +30,7 @@ class SearchTree:
         return (path)
         
     # procurar a solucao
-    def search(self, limit=5000):
+    def search(self, limit=1000):
         while self.open_nodes != []:
             node = self.open_nodes.pop(0)
             if self.problem.goal_test(node.state):
@@ -54,9 +54,10 @@ class SearchTree:
                     newstate = self.problem.domain.result(deepcopy(node.state), action)
                     newnode = SearchNode(newstate, node, node.depth + 1)
                     if self.new_on_hashtable(newnode.state):
-                        if self.problem.deadlocks_free(newnode.state):
-                            lnewnodes.append(newnode)
-                            self.num_nodes += 1
+                        if action[0] == 'push' and not self.problem.deadlocks_free(newnode.state):
+                            continue
+                        lnewnodes.append(newnode)
+                        self.num_nodes += 1
                 lnewnodes.sort(key=lambda n: self.problem.domain.heuristic(n.state))
                 self.add_to_open(lnewnodes)
         return None if self.solutions == [] else self.solutions

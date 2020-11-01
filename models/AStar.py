@@ -27,7 +27,7 @@ class Node:
     def __hash__(self):
         return hash(str(self.position) + str(self.parent))
 
-def astar_get_path(state: Map, start, end, costom = lambda x,y,z: True):
+def astar_get_path(state: Map, start, end, custom = lambda x,y,z: True):
     open_node = []
     closed = set()
     start_node = Node(start, None)
@@ -45,7 +45,7 @@ def astar_get_path(state: Map, start, end, costom = lambda x,y,z: True):
             return path[::-1]
         neighbors = get_adjs_pos(state, current_node.position)
         for new_node in neighbors:
-            if not costom(state, current_node.position, new_node):
+            if not custom(state, current_node.position, new_node):
                 continue
             new_tile = state.get_tile(new_node)
             if new_tile in [Tiles.WALL, Tiles.BOX, Tiles.BOX_ON_GOAL]:

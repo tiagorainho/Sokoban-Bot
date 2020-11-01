@@ -1,4 +1,5 @@
-from models.Utils import get_adjs_pos, switch_tiles
+from copy import deepcopy
+from models.Utils import can_push_box, get_adjs_pos, switch_tiles
 from models.AStar import astar_get_path
 from consts import Tiles
 from mapa import Map
@@ -32,6 +33,8 @@ def get_static_deadlock_positions(state: Map):
     return deadlocks
 
 def has_deadlocks_dynamic(state: Map):
+    if len(state.filter_tiles([Tiles.BOX])) < 2: return False
+    box_movement_rules = lambda state, current_node, new_node: state.get_tile((current_node[0] - (new_node[0]-current_node[0]), current_node[1] - (new_node[1]-current_node[1]))) != Tiles.WALL
     adjs_lambda = lambda box: [(box[0]+1,box[1]), (box[0]-1, box[1]), (box[0], box[1]+1), (box[0], box[1]-1)]
     square_lambda = lambda box: [(box[0], box[1]), (box[0]+1,box[1]), (box[0], box[1]+1), (box[0]+1, box[1]+1)]
 
@@ -68,4 +71,21 @@ def has_deadlocks_dynamic(state: Map):
                         if state.get_tile((box[0]-1, box[1])) == Tiles.WALL and state.get_tile((adjs[i][0]-1, adjs[i][1])) == Tiles.WALL: return True
                         if state.get_tile((box[0]+1, box[1])) == Tiles.WALL and state.get_tile((adjs[i][0]+1, adjs[i][1])) == Tiles.WALL: return True
 
+    # check if game is winnable (should be the last check)
+    '''
+    goals = state.filter_tiles([Tiles.GOAL, Tiles.MAN_ON_GOAL, Tiles.BOX_ON_GOAL])
+    boxes_on_goal = state.filter_tiles([Tiles.BOX_ON_GOAL])
+    boxes = state.filter_tiles([Tiles.BOX, Tiles.BOX_ON_GOAL])
+    state2 = deepcopy(state)
+    for goal in goals:
+        if state2.get_tile(goal) == Tiles.BOX_ON_GOAL:
+            continue
+        found = False
+        for box in boxes:
+            if astar_get_path(state2, box, goal, box_movement_rules) != None:
+                found = True
+                break
+        if not found:
+            return True
+    '''
     return False
