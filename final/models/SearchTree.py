@@ -13,9 +13,9 @@ BOX_TILES = [Tiles.BOX, Tiles.BOX_ON_GOAL]
 GOAL_TILES = [Tiles.GOAL, Tiles.MAN_ON_GOAL, Tiles.BOX_ON_GOAL]
 adjs = lambda box: [(box[0]+1,box[1]), (box[0]-1, box[1]), (box[0], box[1]+1), (box[0], box[1]-1)]
 
-MAX_BORDER_BOXES = 6
+MAX_BORDER_BOXES = 8
 CORRAL_DEPTH_LIMIT_PER_BOX = 4
-depth_limit = lambda limit_per_box, boxes_number: 5 #limit_per_box*boxes_number
+depth_limit = lambda limit_per_box, boxes_number: 6 #limit_per_box*boxes_number
 
 class SearchTree:
 
@@ -84,9 +84,8 @@ class SearchTree:
                                 is_corral_deadlock = await has_corral_deadlock(node.state, area, border_boxes, self.floor_inside, self.problem, self.heuristic_grid, depth_limit(CORRAL_DEPTH_LIMIT_PER_BOX, len(border_boxes)))
                                 self.save_corral_info(border_boxes, reachable_coords, is_corral_deadlock)
                                 if is_corral_deadlock: break
-                        if is_corral_deadlock: continue
+                        if is_corral_deadlock: continue                    
                     '''
-                    
                 for action in actions:
                     next_action = None
                     if len(action) == 3:

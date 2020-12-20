@@ -84,6 +84,7 @@ def aglomerate_areas(state: OptimizedMap, areas):
         change_happened = False
         for area in areas:
             extended_area = set()
+            area_boxes = get_boxes_border(state, area)
             for coord in area:
                 adjs = coords_adjs(coord[0], coord[1]) + wider_adjs(coord[0], coord[1])
                 for adj in adjs: extended_area.add(adj)
@@ -96,6 +97,17 @@ def aglomerate_areas(state: OptimizedMap, areas):
                         areas.remove(area2)
                         change_happened = True
                         break
+                if change_happened: break
+                area_boxes2 = get_boxes_border(state, area2)
+                for box in area_boxes:
+                    for box2 in area_boxes2:
+                        if box==box2:
+                            areas.append(area.union(area2))
+                            areas.remove(area)
+                            areas.remove(area2)
+                            change_happened = True
+                            break
+                    if change_happened: break
                 if change_happened: break
             if change_happened: break
     return areas
